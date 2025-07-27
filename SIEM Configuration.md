@@ -35,15 +35,20 @@ Configuring Suricata is pretty straight forward, if you want more rules you can 
 
 After downloading rules open suricata.yaml and there I needed to edit 3 things:
 
+1. **The HOME_NET variable representing the network that is monitored**
+
 ![HOME_NET variable](assets/suricata_conf_s1.png)
-*1. The HOME_NET variable representing the network that is monitored*
+
+2. **The default rules directory and specific rules to be loaded**
 
 ![Rules files](assets/suricata_conf_s2.png)
-*2. The default rules directory and specific rules to be loaded:*
+
+
+3. **And the interface which will be used for listening.**
 
 ![Interface ID](assets/suricata_conf_s3.png)
-*3. And the interface which will be used for listening.*\
-On Windows it is a bit specific, suricata expects the interface ID which can be obtained by simply running:
+
+On Windows it is a bit specific, Suricata expects the interface ID which can be obtained by simply running:
 `suricata.exe -c suricata.yaml -i <IP_ADDRESS>`
 - The IP_ADDRESS here represents the address of the interface on which Suricata will run
 
