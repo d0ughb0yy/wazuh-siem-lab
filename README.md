@@ -12,8 +12,6 @@ I also disabled the *root* user and only the admins can use `sudo` to access it.
 
 ---
 
-</br>
-
 [SIEM Server Configuration](siem-server-configuration.md)\
 [Client Server Configuration](client-server-configuration.md)\
 [DVWA Configuration](dvwa-configuration.md)
