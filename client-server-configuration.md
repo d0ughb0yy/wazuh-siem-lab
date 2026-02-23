@@ -1,29 +1,42 @@
+## Overview
+
+This document covers the configuration of the client server, including SSH hardening, Suricata IDS installation and setup, and Wazuh agent integration.
+
 ## Initial Configuration
+
 ### SSH Hardening
-I again edited the *sshd_config* file in */etc/ssh/* folder so that the server accepts connections via SSH **only** if the public key is in the *authorized_keys* file of the *web-admin* user this time.
+
+The `sshd_config` file in `/etc/ssh/` is configured to accept SSH connections only if the public key is present in the `authorized_keys` file of the `web-admin` user.
 
 ## Configuring Suricata
 
 ### Installation
-First I needed to download some dependencies and add the repository to my package manager:
-```Shell
+
+Install the required dependencies and add the Suricata stable repository:
+
+```bash
 sudo apt-get install software-properties-common
 sudo add-apt-repository ppa:oisf/suricata-stable
-sudo apt update
-sudo apt install suricata jq
+sudo apt-get update
+sudo apt-get install suricata jq
 ```
 
 ### Initial Configuration
-I replaced the ***eth0*** entries in */etc/suricata/suricata.yaml* file with my ***enp1s0*** interface, most importantly, change the interface under the ***af-packet:*** section:
-```YAML
+
+Replace the `eth0` interface entries in `/etc/suricata/suricata.yaml` with the appropriate network interface (e.g., `enp1s0`). The most important change is in the `af-packet` section:
+
+```yaml
 af-packet:
   - interface: enp1s0
 ```
 
-After that I restarted Suricata to load new settings and went setting up the Wazuh agent integration.
+After making these changes, restart Suricata to load the new settings.
 
-**Configuring */var/ossec/etc/ossec.conf***
-```XML
+### Wazuh Agent Integration
+
+Configure the Wazuh agent to forward Suricata alerts to the SIEM server by editing `/var/ossec/etc/ossec.conf`:
+
+```xml
 <ossec_config>
   <localfile>
     <log_format>json</log_format>
@@ -32,11 +45,14 @@ After that I restarted Suricata to load new settings and went setting up the Waz
 </ossec_config>
 ```
 
-Add the log format and the location of *eve.json* so alerts are sent to the SIEM server via Wazuh agent.
+This configuration specifies the JSON log format and the location of the Suricata eve.json file for SIEM ingestion.
 
-### Rule setup
-I downloaded rules from [Emerging Threats website](https://rules.emergingthreats.net/open/suricata/) and downloaded the *emerging.rules.tar.gz* file containing all the rules I will need.
+### Rule Setup
 
-So I don't need to edit the default rule path I downloaded them to *web-admin* home where I created a new ***suricata-rules*** directory and used `cat` to put the contents of all rule files in the new ***suricata.rules*** file in */var/lib/suricata/rules/* directory.
+Download rules from the [Emerging Threats website](https://rules.emergingthreats.net/open/suricata/) and obtain the `emerging.rules.tar.gz` file containing the required rule sets.
 
-<!-- TODO: Complete rule setup documentation - describe how rules were extracted, tested, and activated -->
+Edit the Suricata rule configuration to include a wildcard pattern, enabling all `.rules` files in the `/var/lib/suricata/rules/` directory to be loaded automatically.
+
+## Next Steps
+
+Continue to [DVWA Configuration](dvwa-configuration.md) to install and configure the Damn Vulnerable Web Application.
